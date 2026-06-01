@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>OTC Control Tower · SAP Analytics Cloud</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  /* ============================================================
+     SAP Horizon-inspired styling
+     ============================================================ */
+  :root{
+    --sap-bg: #f5f6f7;
+    --sap-bg-2: #eaecee;
+    --sap-card: #ffffff;
+    --sap-line: #d9dde1;
+    --sap-line-2: #eaecee;
+    --sap-ink: #1d2d3e;
+    --sap-ink-2: #556b82;
+    --sap-muted: #788fa6;
+    --sap-blue: #0070f2;
+    --sap-blue-2: #0040b0;
+    --sap-blue-soft: #e8f1ff;
+    --sap-blue-soft-2: #d1e3ff;
+    --sap-green: #188918;
+    --sap-green-soft: #e6f4e6;
+    --sap-amber: #c35500;
+    --sap-amber-soft: #fff4e3;
+    --sap-red: #aa0808;
+    --sap-red-soft: #ffeae8;
+    --sap-violet: #7858ff;
+    --sap-teal: #049cb6;
+    --sap-pink: #e6457a;
+    --sap-yellow: #e9b300;
+    --sap-shell: #354a5f;
+    --sap-shell-2: #223444;
+    --shadow-1: 0 1px 0 rgba(13,38,76,.04), 0 2px 8px rgba(13,38,76,.06);
+    --shadow-2: 0 8px 24px rgba(13,38,76,.12);
+    --r: 8px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--sap-bg);color:var(--sap-ink);
+    font-family:"72","72full","SAP-icons","Inter","Helvetica Neue",Arial,sans-serif;
+    font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;color:inherit}
+  /* Shell -------------------------------------------------------- */
+  .shell-top{
+    height:44px;background:var(--sap-shell);color:#fff;display:flex;align-items:center;
+    padding:0 16px;gap:14px;font-size:13px;position:sticky;top:0;z-index:60;
+  }
+  .shell-top .menu{width:18px;height:14px;display:inline-grid;gap:3px}
+  .shell-top .menu i{display:block;height:2px;background:#fff;border-radius:1px}
+  .shell-top .sap-logo{font-weight:800;letter-spacing:.5px;background:#0a6ed1;color:#fff;border-radius:2px;padding:2px 6px;font-size:11px}
+  .shell-top .product{font-weight:600}
+  .shell-top .crumb{color:#bcc8d4;font-weight:400}
+  .shell-top .crumb b{color:#fff;font-weight:600}
+  .shell-top .spacer{flex:1}
+  .shell-top .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+  .shell-top .ic:hover{background:rgba(255,255,255,.1)}
+  .shell-top .avatar{width:28px;height:28px;border-radius:50%;background:#7e94aa;display:grid;place-items:center;color:#fff;font-weight:600;font-size:12px}
+
+  .sub-toolbar{
+    background:#fff;border-bottom:1px solid var(--sap-line);
+    padding:10px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:44px;z-index:55;
+  }
+  .story-title{font-size:18px;font-weight:600;color:var(--sap-ink);letter-spacing:-.1px}
+  .story-sub{color:var(--sap-muted);font-size:12px;margin-left:4px}
+  .toolbar-actions{margin-left:auto;display:flex;gap:6px}
+  .tb-btn{
+    border:1px solid var(--sap-line);background:#fff;border-radius:6px;
+    padding:6px 10px;font-size:12px;color:var(--sap-ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  }
+  .tb-btn:hover{background:var(--sap-blue-soft);border-color:var(--sap-blue)}
+  .tb-btn.primary{background:var(--sap-blue);color:#fff;border-color:var(--sap-blue)}
+  .tb-btn.primary:hover{background:var(--sap-blue-2)}
+
+  /* Story tabs (SAC pages) */
+  .story-tabs{
+    background:#fff;border-bottom:1px solid var(--sap-line);padding:0 18px;display:flex;gap:2px;
+    position:sticky;top:97px;z-index:54;overflow-x:auto;
+  }
+  .story-tab{
+    padding:10px 16px;border:none;background:transparent;color:var(--sap-ink-2);font-size:13px;cursor:pointer;
+    border-bottom:2px solid transparent;white-space:nowrap;
+  }
+  .story-tab:hover{color:var(--sap-blue)}
+  .story-tab.active{color:var(--sap-blue);border-bottom-color:var(--sap-blue);font-weight:600}
+
+  /* Filter bar */
+  .filter-bar{
+    background:#fff;border-bottom:1px solid var(--sap-line);padding:12px 18px;
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:139px;z-index:53;
+  }
+  .filter-bar .lbl{color:var(--sap-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+  .flt{
+    position:relative;
+  }
+  .flt-btn{
+    border:1px solid var(--sap-line);background:#fff;border-radius:18px;padding:5px 10px 5px 12px;
+    font-size:12px;color:var(--sap-ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:28px;
+  }
+  .flt-btn:hover{border-color:var(--sap-blue);color:var(--sap-blue)}
+  .flt-btn.active{background:var(--sap-blue-soft);border-color:var(--sap-blue);color:var(--sap-blue);font-weight:600}
+  .flt-btn .nm{color:var(--sap-muted);font-weight:500}
+  .flt-btn.active .nm{color:var(--sap-blue)}
+  .flt-btn .caret{font-size:10px;opacity:.7}
+  .flt-btn .count{
+    background:var(--sap-blue);color:#fff;border-radius:10px;font-size:10px;padding:0 6px;height:16px;
+    display:inline-grid;place-items:center;font-weight:700;
+  }
+  .flt-menu{
+    position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--sap-line);
+    border-radius:8px;box-shadow:var(--shadow-2);min-width:220px;padding:8px;z-index:60;display:none;
+  }
+  .flt.open .flt-menu{display:block}
+  .flt-menu .search{
+    width:100%;padding:6px 8px;border:1px solid var(--sap-line);border-radius:6px;font:inherit;font-size:12px;margin-bottom:6px;
+  }
+  .flt-menu label{
+    display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:4px;font-size:12px;cursor:pointer;
+  }
+  .flt-menu label:hover{background:var(--sap-blue-soft)}
+  .flt-menu input[type=checkbox]{accent-color:var(--sap-blue)}
+  .flt-menu .menu-actions{display:flex;justify-content:space-between;padding-top:6px;border-top:1px solid var(--sap-line-2);margin-top:6px}
+  .flt-menu .menu-actions button{
+    border:none;background:transparent;color:var(--sap-blue);font:inherit;font-size:12px;cursor:pointer;padding:4px 6px;
+  }
+  .flt-bar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .seg{
+    border:1px solid var(--sap-line);border-radius:18px;background:#fff;padding:2px;display:inline-flex;
+  }
+  .seg button{
+    border:none;background:transparent;color:var(--sap-ink-2);font-size:12px;padding:4px 10px;border-radius:14px;cursor:pointer;
+  }
+  .seg button.active{background:var(--sap-blue);color:#fff;font-weight:600}
+  .reset-btn{color:var(--sap-blue);background:transparent;border:none;cursor:pointer;font-size:12px;font-weight:600}
+
+  /* Story canvas */
+  .canvas{padding:18px;display:flex;flex-direction:column;gap:14px}
+
+  /* KPI strip */
+  .kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+  .tile{
+    background:#fff;border:1px solid var(--sap-line);border-radius:var(--r);padding:14px 14px 10px 14px;
+    box-shadow:var(--shadow-1);position:relative;cursor:pointer;transition:box-shadow .15s, border-color .15s;
+    min-height:148px;display:flex;flex-direction:column;
+  }
+  .tile:hover{border-color:var(--sap-blue);box-shadow:var(--shadow-2)}
+  .tile .nm{font-size:12px;color:var(--sap-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+  .tile .vl{font-size:30px;font-weight:700;letter-spacing:-.6px;margin-top:6px;display:flex;align-items:baseline;gap:4px}
+  .tile .vl .u{font-size:14px;color:var(--sap-ink-2);font-weight:500}
+  .tile .meta{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:6px}
+  .tile .delta{font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px}
+  .tile .delta.up{background:var(--sap-green-soft);color:var(--sap-green)}
+  .tile .delta.down{background:var(--sap-red-soft);color:var(--sap-red)}
+  .tile .delta.flat{background:var(--sap-line-2);color:var(--sap-ink-2)}
+  .tile .target{font-size:11px;color:var(--sap-muted)}
+  .tile .spark{height:30px;margin-top:6px}
+  .tile .spark svg{width:100%;height:100%;display:block}
+  .tile .target-bar{height:3px;border-radius:2px;background:var(--sap-line-2);margin-top:6px;position:relative;overflow:hidden}
+  .tile .target-bar .f{position:absolute;top:0;left:0;bottom:0;border-radius:2px}
+
+  /* Card / panel */
+  .card{
+    background:#fff;border:1px solid var(--sap-line);border-radius:var(--r);box-shadow:var(--shadow-1);
+    padding:14px 16px;display:flex;flex-direction:column;
+  }
+  .card h3{margin:0;font-size:14px;font-weight:600;letter-spacing:-.1px;display:flex;align-items:center;gap:8px}
+  .card .sub{font-size:11px;color:var(--sap-muted);margin-top:2px}
+  .card-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+  .card-head .actions{margin-left:auto;display:flex;gap:4px}
+  .icon-btn{
+    width:26px;height:26px;border:none;background:transparent;border-radius:4px;cursor:pointer;color:var(--sap-ink-2);
+    display:grid;place-items:center;
+  }
+  .icon-btn:hover{background:var(--sap-blue-soft);color:var(--sap-blue)}
+  .icon-btn svg{width:14px;height:14px}
+
+  /* Grid layouts */
+  .row{display:grid;gap:14px}
+  .row-2-funnel{grid-template-columns:1.1fr 1.4fr}
+  .row-2-eq{grid-template-columns:1fr 1fr}
+  .row-3{grid-template-columns:1.4fr 1fr}
+
+  /* Funnel chart */
+  .funnel{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+  .fnl-row{position:relative;display:grid;grid-template-columns:120px 1fr 110px;gap:10px;align-items:center;font-size:12px}
+  .fnl-row .nm{color:var(--sap-ink-2);font-weight:500}
+  .fnl-row .bar{height:24px;background:var(--sap-line-2);border-radius:4px;position:relative;overflow:hidden}
+  .fnl-row .bar .fill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#5b9bff,var(--sap-blue));border-radius:4px;transition:width .6s}
+  .fnl-row .bar .lbl{
+    position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#fff;font-size:11px;font-weight:600;
+    text-shadow:0 1px 2px rgba(0,0,0,.15);
+  }
+  .fnl-row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--sap-ink)}
+  .fnl-row .conv{font-size:10px;color:var(--sap-green);font-weight:600}
+
+  /* Trend chart */
+  .chart-area{position:relative;flex:1;min-height:240px}
+  .chart-area svg{width:100%;height:240px;display:block}
+  .legend{display:flex;gap:14px;margin-top:8px;font-size:12px;color:var(--sap-ink-2)}
+  .legend .sw{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .legend .dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:6px}
+
+  /* Aging bars */
+  .aging{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .aging-row{display:grid;grid-template-columns:80px 1fr 90px;gap:10px;align-items:center;font-size:12px;cursor:pointer}
+  .aging-row:hover .nm{color:var(--sap-blue)}
+  .aging-row .nm{color:var(--sap-ink);font-weight:500}
+  .aging-row .bar{height:18px;background:var(--sap-line-2);border-radius:4px;position:relative;overflow:hidden}
+  .aging-row .bar .fill{position:absolute;inset:0 auto 0 0;border-radius:4px}
+  .aging-row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+
+  /* Map (svg) */
+  .map-wrap{flex:1;position:relative;min-height:260px}
+  .map-wrap svg{width:100%;height:100%;display:block}
+  .country{cursor:pointer;stroke:#fff;stroke-width:.8;transition:opacity .15s}
+  .country:hover{opacity:.7}
+  .map-tooltip{
+    position:absolute;background:var(--sap-shell);color:#fff;font-size:11px;padding:6px 10px;border-radius:4px;
+    pointer-events:none;opacity:0;transition:opacity .12s;white-space:nowrap;box-shadow:var(--shadow-2);z-index:5;
+  }
+
+  /* Tables */
+  table.sac{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.sac th, table.sac td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--sap-line-2)}
+  table.sac th{
+    font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--sap-muted);font-weight:600;background:#fafbfc;
+    position:sticky;top:0;
+  }
+  table.sac td.num, table.sac th.num{text-align:right;font-variant-numeric:tabular-nums}
+  table.sac tr.clickable{cursor:pointer}
+  table.sac tr.clickable:hover{background:var(--sap-blue-soft)}
+  .chip{
+    display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;
+    background:var(--sap-line-2);color:var(--sap-ink-2);
+  }
+  .chip.ok{background:var(--sap-green-soft);color:var(--sap-green)}
+  .chip.warn{background:var(--sap-amber-soft);color:var(--sap-amber)}
+  .chip.bad{background:var(--sap-red-soft);color:var(--sap-red)}
+  .chip.info{background:var(--sap-blue-soft);color:var(--sap-blue)}
+
+  /* Alerts */
+  .alerts{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .alert{
+    display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:start;padding:10px 12px;
+    border:1px solid var(--sap-line-2);border-radius:6px;font-size:12.5px;background:#fff;cursor:pointer;
+    border-left-width:3px;
+  }
+  .alert:hover{background:var(--sap-blue-soft);border-color:var(--sap-blue)}
+  .alert.bad{border-left-color:var(--sap-red)}
+  .alert.warn{border-left-color:var(--sap-amber)}
+  .alert.info{border-left-color:var(--sap-blue)}
+  .alert .ic{
+    width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;
+  }
+  .alert.bad .ic{background:var(--sap-red-soft);color:var(--sap-red)}
+  .alert.warn .ic{background:var(--sap-amber-soft);color:var(--sap-amber)}
+  .alert.info .ic{background:var(--sap-blue-soft);color:var(--sap-blue)}
+  .alert .ttl{font-weight:600}
+  .alert .meta{color:var(--sap-muted);font-size:11px;margin-top:2px}
+  .alert .age{color:var(--sap-muted);font-size:11px;white-space:nowrap}
+
+  /* Page system */
+  .page{display:none}
+  .page.active{display:flex;flex-direction:column;gap:14px}
+
+  /* Drill page summary KPIs (smaller tiles) */
+  .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tile.sm{min-height:96px;padding:12px}
+  .tile.sm .vl{font-size:22px;margin-top:2px}
+
+  /* Tabs inside drill pages */
+  .inner-tabs{display:flex;gap:0;border-bottom:1px solid var(--sap-line);padding:0 4px;margin-bottom:0}
+  .inner-tab{
+    padding:10px 14px;background:transparent;border:none;color:var(--sap-ink-2);font-size:13px;cursor:pointer;
+    border-bottom:2px solid transparent;
+  }
+  .inner-tab:hover{color:var(--sap-blue)}
+  .inner-tab.active{color:var(--sap-blue);font-weight:600;border-bottom-color:var(--sap-blue)}
+
+  /* Side panel */
+  .scrim{
+    position:fixed;inset:0;background:rgba(13,38,76,.32);opacity:0;pointer-events:none;
+    transition:opacity .2s;z-index:80;
+  }
+  .scrim.open{opacity:1;pointer-events:auto}
+  .side{
+    position:fixed;top:0;right:-600px;width:600px;max-width:100vw;height:100vh;background:#fff;
+    box-shadow:-12px 0 32px rgba(13,38,76,.18);transition:right .25s ease;z-index:85;
+    display:flex;flex-direction:column;
+  }
+  .side.open{right:0}
+  .side header{
+    padding:14px 18px;border-bottom:1px solid var(--sap-line);display:flex;align-items:center;gap:10px;
+  }
+  .side header .small{font-size:11px;color:var(--sap-muted);text-transform:uppercase;letter-spacing:.5px}
+  .side header .ttl{font-size:16px;font-weight:600;margin-top:1px}
+  .side header .close{margin-left:auto;background:transparent;border:none;cursor:pointer;color:var(--sap-ink-2);font-size:18px;padding:6px 10px;border-radius:6px}
+  .side header .close:hover{background:var(--sap-bg-2);color:var(--sap-ink)}
+  .side .body{padding:14px 18px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:12px}
+  .side .footer{
+    padding:12px 16px;border-top:1px solid var(--sap-line);display:flex;gap:8px;justify-content:flex-end;
+  }
+  .kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:12.5px}
+  .kv-grid .k{color:var(--sap-muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  .kv-grid .v{color:var(--sap-ink);font-weight:600;margin-top:1px;margin-bottom:6px}
+
+  /* Status timeline */
+  .timeline{display:flex;align-items:center;gap:0;margin:6px 0}
+  .timeline .step{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;position:relative}
+  .timeline .dot{width:22px;height:22px;border-radius:50%;background:var(--sap-line);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;z-index:2}
+  .timeline .step.done .dot{background:var(--sap-green)}
+  .timeline .step.current .dot{background:var(--sap-blue);box-shadow:0 0 0 4px var(--sap-blue-soft)}
+  .timeline .step.pending .dot{background:var(--sap-line);color:var(--sap-muted)}
+  .timeline .label{font-size:11px;color:var(--sap-ink-2)}
+  .timeline .step.current .label{color:var(--sap-blue);font-weight:600}
+  .timeline .line{position:absolute;top:11px;left:50%;right:-50%;height:2px;background:var(--sap-line);z-index:1}
+  .timeline .step.done .line{background:var(--sap-green)}
+  .timeline .step:last-child .line{display:none}
+
+  /* Smart insight box */
+  .insight{
+    background:linear-gradient(180deg,#f0f5ff,#e8f1ff);border:1px solid var(--sap-blue-soft-2);
+    border-radius:6px;padding:10px 12px;font-size:12.5px;color:var(--sap-ink);display:flex;gap:10px;align-items:flex-start;
+  }
+  .insight .ai{
+    flex:0 0 24px;height:24px;border-radius:50%;background:var(--sap-blue);color:#fff;display:grid;place-items:center;
+    font-size:11px;font-weight:700;
+  }
+  .insight b{color:var(--sap-blue-2)}
+
+  /* breadcrumb above drill page */
+  .crumb-bar{
+    background:#fff;border-bottom:1px solid var(--sap-line);padding:8px 18px;font-size:12px;color:var(--sap-muted);
+    display:flex;align-items:center;gap:6px;
+  }
+  .crumb-bar a{color:var(--sap-blue);text-decoration:none;cursor:pointer}
+  .crumb-bar .sep{color:var(--sap-line)}
+
+  /* responsive */
+  @media (max-width:1280px){
+    .kpi-strip{grid-template-columns:repeat(3,1fr)}
+    .row-2-funnel,.row-2-eq,.row-3{grid-template-columns:1fr}
+    .summary-strip{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:760px){
+    .kpi-strip{grid-template-columns:repeat(2,1fr)}
+    .summary-strip{grid-template-columns:1fr}
+    .filter-bar{position:static}
+    .story-tabs{position:static}
+  }
+
+  /* SAC-style chart axes */
+  .axis-label{font-size:10.5px;fill:var(--sap-muted)}
+  .grid-line{stroke:var(--sap-line-2);stroke-width:1}
+  .target-line{stroke:var(--sap-amber);stroke-width:1;stroke-dasharray:4 3}
+
+</style>
+</head>
+<body>
+
+<!-- ============== SHELL TOP BAR ============== -->
+<div class="shell-top">
+  <span class="menu"><i></i><i></i><i></i></span>
+  <span class="sap-logo">SAP</span>
+  <span class="product">Analytics Cloud</span>
+  <span class="crumb"> / NovaBiosciences / Stories / <b>OTC Control Tower</b></span>
+  <span class="spacer"></span>
+  <span class="ic" title="Search">🔍</span>
+  <span class="ic" title="Notifications">🔔</span>
+  <span class="ic" title="Help">?</span>
+  <span class="avatar">KM</span>
+</div>
+
+<!-- ============== STORY HEADER ============== -->
+<div class="sub-toolbar">
+  <div>
+    <div class="story-title">OTC Control Tower — Balanced Scorecard</div>
+    <div class="story-sub">NovaBiosciences · Order to Cash · Last refresh: 28 May 2026, 06:00 CET</div>
+  </div>
+  <div class="toolbar-actions">
+    <button class="tb-btn" title="Smart Insights">✨ Insights</button>
+    <button class="tb-btn">💬 Comments</button>
+    <button class="tb-btn">⬇ Export</button>
+    <button class="tb-btn">↻ Refresh</button>
+    <button class="tb-btn primary">Edit</button>
+  </div>
+</div>
+
+<!-- Story page tabs (SAC style) -->
+<div class="story-tabs">
+  <button class="story-tab active" data-page="p1">Overview</button>
+  <button class="story-tab" data-page="p2">Sales Orders</button>
+  <button class="story-tab" data-page="p3">Deliveries</button>
+  <button class="story-tab" data-page="p4">Invoices</button>
+  <button class="story-tab" data-page="p5">Receivables</button>
+</div>
+
+<!-- ============== FILTER BAR ============== -->
+<div class="filter-bar" id="filterBar">
+  <span class="lbl">Filters</span>
+
+  <div class="flt" data-filter="period">
+    <button class="flt-btn active" onclick="toggleFilter(this)">
+      <span class="nm">Period:</span> <span class="vl">Last 12M</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <label><input type="radio" name="period" checked> Last 12 months</label>
+      <label><input type="radio" name="period"> Last 6 months</label>
+      <label><input type="radio" name="period"> Last 3 months</label>
+      <label><input type="radio" name="period"> Fiscal YTD</label>
+      <label><input type="radio" name="period"> Custom range…</label>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="month">
+    <button class="flt-btn active" onclick="toggleFilter(this)">
+      <span class="nm">Month:</span> <span class="vl">May 2026</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <label><input type="radio" name="m" checked> May 2026</label>
+      <label><input type="radio" name="m"> Apr 2026</label>
+      <label><input type="radio" name="m"> Mar 2026</label>
+      <label><input type="radio" name="m"> Feb 2026</label>
+      <label><input type="radio" name="m"> Jan 2026</label>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="salesorg">
+    <button class="flt-btn active" onclick="toggleFilter(this)">
+      <span class="nm">Sales Org:</span> <span class="vl">3</span> <span class="count">3</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <input class="search" placeholder="Search…" />
+      <label><input type="checkbox" checked> 1000 — Nova DE</label>
+      <label><input type="checkbox" checked> 1010 — Nova EU</label>
+      <label><input type="checkbox" checked> 2000 — Nova US</label>
+      <label><input type="checkbox"> 3000 — Nova APAC</label>
+      <div class="menu-actions"><button>Select all</button><button>Clear</button></div>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="country">
+    <button class="flt-btn active" onclick="toggleFilter(this)">
+      <span class="nm">Country:</span> <span class="vl">DE, US, FR</span> <span class="count">3</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <input class="search" placeholder="Search countries…" />
+      <label><input type="checkbox" checked> Germany</label>
+      <label><input type="checkbox" checked> United States</label>
+      <label><input type="checkbox" checked> France</label>
+      <label><input type="checkbox"> Switzerland</label>
+      <label><input type="checkbox"> Italy</label>
+      <label><input type="checkbox"> Japan</label>
+      <label><input type="checkbox"> United Kingdom</label>
+      <div class="menu-actions"><button>Select all</button><button>Clear</button></div>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="cc">
+    <button class="flt-btn" onclick="toggleFilter(this)">
+      <span class="nm">Company Code:</span> <span class="vl">All</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <label><input type="checkbox" checked> NB10 — Nova GmbH</label>
+      <label><input type="checkbox" checked> NB20 — Nova Inc.</label>
+      <label><input type="checkbox" checked> NB30 — Nova SAS</label>
+      <label><input type="checkbox" checked> NB40 — Nova K.K.</label>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="ot">
+    <button class="flt-btn active" onclick="toggleFilter(this)">
+      <span class="nm">Order Type:</span> <span class="vl">OR, RE</span> <span class="count">2</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <label><input type="checkbox" checked> OR — Standard Order</label>
+      <label><input type="checkbox" checked> RE — Returns</label>
+      <label><input type="checkbox"> CR — Credit Memo Req.</label>
+      <label><input type="checkbox"> DR — Debit Memo Req.</label>
+      <label><input type="checkbox"> KE — Consignment Issue</label>
+    </div>
+  </div>
+
+  <div class="flt" data-filter="cust">
+    <button class="flt-btn" onclick="toggleFilter(this)">
+      <span class="nm">Customer:</span> <span class="vl">All</span> <span class="caret">▾</span>
+    </button>
+    <div class="flt-menu">
+      <input class="search" placeholder="Search customers…" />
+      <label><input type="checkbox" checked> Genentech Labs</label>
+      <label><input type="checkbox" checked> Bayer Pharma DE</label>
+      <label><input type="checkbox" checked> Sanofi FR</label>
+      <label><input type="checkbox" checked> Roche CH</label>
+      <label><input type="checkbox" checked> Takeda JP</label>
+    </div>
+  </div>
+
+  <div class="flt-bar-right">
+    <span class="lbl">Trend</span>
+    <div class="seg" id="trendSeg">
+      <button>3M</button><button>6M</button><button class="active">12M</button>
+    </div>
+    <button class="reset-btn" onclick="resetFilters()">Reset</button>
+  </div>
+</div>
+
+<!-- ============== STORY CANVAS ============== -->
+<div class="canvas">
+
+<!-- =================================================================== -->
+<!-- PAGE 1 — OVERVIEW                                                    -->
+<!-- =================================================================== -->
+<section class="page active" id="p1">
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+
+    <div class="tile" onclick="goto('p2')">
+      <div class="nm">Order in Full · On Time</div>
+      <div class="vl">93.4<span class="u">%</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#0070f2" stop-opacity=".25"/><stop offset="100%" stop-color="#0070f2" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,22 L9,20 L18,21 L27,18 L36,19 L45,16 L54,17 L63,15 L72,13 L81,14 L90,11 L100,9 L100,30 L0,30 Z" fill="url(#g1)"/>
+        <polyline fill="none" stroke="#0070f2" stroke-width="1.6" points="0,22 9,20 18,21 27,18 36,19 45,16 54,17 63,15 72,13 81,14 90,11 100,9"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:93.4%;background:linear-gradient(90deg,#0070f2,#5b9bff)"></div></div>
+      <div class="meta">
+        <span class="delta up">▲ 1.2 pp</span>
+        <span class="target">Target 95%</span>
+      </div>
+    </div>
+
+    <div class="tile" onclick="goto('p3')">
+      <div class="nm">Delivery in Full · On Time</div>
+      <div class="vl">95.1<span class="u">%</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g2" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#7858ff" stop-opacity=".25"/><stop offset="100%" stop-color="#7858ff" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,8 L9,9 L18,8 L27,10 L36,9 L45,11 L54,10 L63,12 L72,11 L81,13 L90,12 L100,11 L100,30 L0,30 Z" fill="url(#g2)"/>
+        <polyline fill="none" stroke="#7858ff" stroke-width="1.6" points="0,8 9,9 18,8 27,10 36,9 45,11 54,10 63,12 72,11 81,13 90,12 100,11"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:95.1%;background:linear-gradient(90deg,#7858ff,#a48aff)"></div></div>
+      <div class="meta">
+        <span class="delta down">▼ 0.4 pp</span>
+        <span class="target">Target 97%</span>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="nm">Days of Supply</div>
+      <div class="vl">38<span class="u">d</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g3" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#049cb6" stop-opacity=".25"/><stop offset="100%" stop-color="#049cb6" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,12 L9,13 L18,15 L27,12 L36,11 L45,13 L54,15 L63,13 L72,12 L81,11 L90,13 L100,12 L100,30 L0,30 Z" fill="url(#g3)"/>
+        <polyline fill="none" stroke="#049cb6" stroke-width="1.6" points="0,12 9,13 18,15 27,12 36,11 45,13 54,15 63,13 72,12 81,11 90,13 100,12"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:60%;background:linear-gradient(90deg,#049cb6,#5dd0e2)"></div></div>
+      <div class="meta">
+        <span class="delta flat">— stable</span>
+        <span class="target">Target 30–45d</span>
+      </div>
+    </div>
+
+    <div class="tile" onclick="goto('p5')">
+      <div class="nm">DSO</div>
+      <div class="vl">47.2<span class="u">d</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g4" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#aa0808" stop-opacity=".22"/><stop offset="100%" stop-color="#aa0808" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,18 L9,17 L18,18 L27,16 L36,15 L45,14 L54,13 L63,12 L72,11 L81,10 L90,9 L100,8 L100,30 L0,30 Z" fill="url(#g4)"/>
+        <polyline fill="none" stroke="#aa0808" stroke-width="1.6" points="0,18 9,17 18,18 27,16 36,15 45,14 54,13 63,12 72,11 81,10 90,9 100,8"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:95%;background:linear-gradient(90deg,#aa0808,#e6457a)"></div></div>
+      <div class="meta">
+        <span class="delta down">▲ 2.1 d</span>
+        <span class="target">Target ≤45d</span>
+      </div>
+    </div>
+
+    <div class="tile" onclick="goto('p5')">
+      <div class="nm">Open AR</div>
+      <div class="vl">€18.4<span class="u">M</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g5" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#c35500" stop-opacity=".22"/><stop offset="100%" stop-color="#c35500" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,20 L9,19 L18,18 L27,19 L36,17 L45,15 L54,14 L63,13 L72,12 L81,11 L90,10 L100,9 L100,30 L0,30 Z" fill="url(#g5)"/>
+        <polyline fill="none" stroke="#c35500" stroke-width="1.6" points="0,20 9,19 18,18 27,19 36,17 45,15 54,14 63,13 72,12 81,11 90,10 100,9"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:72%;background:linear-gradient(90deg,#c35500,#e9b300)"></div></div>
+      <div class="meta">
+        <span class="delta down">▲ €0.9M</span>
+        <span class="target">vs prior month</span>
+      </div>
+    </div>
+
+    <div class="tile" onclick="goto('p2')">
+      <div class="nm">Order Value · MTD</div>
+      <div class="vl">€7.1<span class="u">M</span></div>
+      <div class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none">
+        <defs><linearGradient id="g6" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#188918" stop-opacity=".25"/><stop offset="100%" stop-color="#188918" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,24 L9,22 L18,20 L27,18 L36,17 L45,16 L54,15 L63,16 L72,14 L81,12 L90,10 L100,7 L100,30 L0,30 Z" fill="url(#g6)"/>
+        <polyline fill="none" stroke="#188918" stroke-width="1.6" points="0,24 9,22 18,20 27,18 36,17 45,16 54,15 63,16 72,14 81,12 90,10 100,7"/>
+      </svg></div>
+      <div class="target-bar"><div class="f" style="width:103%;background:linear-gradient(90deg,#188918,#5fc15f)"></div></div>
+      <div class="meta">
+        <span class="delta up">▲ 3.4% vs plan</span>
+        <span class="target">Plan €6.9M</span>
+      </div>
+    </div>
+
+  </div><!-- /kpi-strip -->
+
+  <!-- Smart insight -->
+  <div class="insight">
+    <div class="ai">✨</div>
+    <div><b>Smart Insight:</b> DSO has been trending up for 6 consecutive months, primarily driven by Takeda JP (+€310K past-due 90+) and a structural slowdown in payment timing across APAC. OIFOT improved (+1.2pp) but DIFOT slipped due to carrier delays at Plant DE01. Recommend reviewing dunning level 3 escalations and Plant DE01 carrier mix.</div>
+  </div>
+
+  <!-- Row 2: Funnel + Trend -->
+  <div class="row row-2-funnel">
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Order-to-Cash Funnel</h3>
+          <div class="sub">Last 12 months · stage counts and net value</div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn" title="Smart Insights">✨</button>
+          <button class="icon-btn" title="Linked analysis">🔗</button>
+          <button class="icon-btn" title="More">⋯</button>
+        </div>
+      </div>
+      <div class="funnel">
+        <div class="fnl-row">
+          <span class="nm">Orders</span>
+          <div class="bar"><span class="fill" style="width:100%"></span><span class="lbl">12,840</span></div>
+          <span class="vl">€92.4M</span>
+        </div>
+        <div class="fnl-row">
+          <span class="nm">Confirmed <span class="conv">96%</span></span>
+          <div class="bar"><span class="fill" style="width:96%;background:linear-gradient(90deg,#5b9bff,#0070f2)"></span><span class="lbl">12,330</span></div>
+          <span class="vl">€88.6M</span>
+        </div>
+        <div class="fnl-row">
+          <span class="nm">Delivered <span class="conv">95%</span></span>
+          <div class="bar"><span class="fill" style="width:91%;background:linear-gradient(90deg,#7896ff,#0058c5)"></span><span class="lbl">11,690</span></div>
+          <span class="vl">€83.1M</span>
+        </div>
+        <div class="fnl-row">
+          <span class="nm">Invoiced <span class="conv">97%</span></span>
+          <div class="bar"><span class="fill" style="width:88%;background:linear-gradient(90deg,#9bb3ff,#0040b0)"></span><span class="lbl">11,290</span></div>
+          <span class="vl">€79.9M</span>
+        </div>
+        <div class="fnl-row">
+          <span class="nm">Collected <span class="conv">90%</span></span>
+          <div class="bar"><span class="fill" style="width:79%;background:linear-gradient(90deg,#bfd0ff,#002b80)"></span><span class="lbl">10,180</span></div>
+          <span class="vl">€71.5M</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>OIFOT vs DIFOT — Trend</h3>
+          <div class="sub">Monthly · target overlay</div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn" title="Smart Insights">✨</button>
+          <button class="icon-btn" title="Linked analysis">🔗</button>
+          <button class="icon-btn" title="More">⋯</button>
+        </div>
+      </div>
+      <div class="chart-area">
+        <svg viewBox="0 0 600 240" preserveAspectRatio="none" id="trendChart">
+          <!-- gridlines -->
+          <line class="grid-line" x1="40" y1="40" x2="595" y2="40"/>
+          <line class="grid-line" x1="40" y1="100" x2="595" y2="100"/>
+          <line class="grid-line" x1="40" y1="160" x2="595" y2="160"/>
+          <line class="grid-line" x1="40" y1="220" x2="595" y2="220"/>
+          <!-- y labels -->
+          <text class="axis-label" x="6" y="44">100%</text>
+          <text class="axis-label" x="6" y="104">95%</text>
+          <text class="axis-label" x="6" y="164">90%</text>
+          <text class="axis-label" x="6" y="224">85%</text>
+          <!-- target -->
+          <line class="target-line" x1="40" y1="100" x2="595" y2="100"/>
+          <text x="555" y="96" font-size="10" fill="#c35500" font-weight="600">Target 95%</text>
+          <!-- OIFOT line + area -->
+          <defs>
+            <linearGradient id="oiArea" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#0070f2" stop-opacity=".18"/><stop offset="100%" stop-color="#0070f2" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M40,140 L86,135 L132,128 L178,122 L224,115 L270,110 L316,108 L362,105 L408,102 L454,99 L500,96 L546,93 L592,90 L592,220 L40,220 Z" fill="url(#oiArea)"/>
+          <polyline fill="none" stroke="#0070f2" stroke-width="2" points="40,140 86,135 132,128 178,122 224,115 270,110 316,108 362,105 408,102 454,99 500,96 546,93 592,90"/>
+          <!-- DIFOT line dashed -->
+          <polyline fill="none" stroke="#7858ff" stroke-width="2" stroke-dasharray="6 4" points="40,108 86,105 132,108 178,103 224,100 270,104 316,102 362,100 408,98 454,102 500,100 546,98 592,96"/>
+          <!-- markers OIFOT -->
+          <g fill="#0070f2">
+            <circle cx="40" cy="140" r="3"/><circle cx="86" cy="135" r="3"/><circle cx="132" cy="128" r="3"/><circle cx="178" cy="122" r="3"/><circle cx="224" cy="115" r="3"/><circle cx="270" cy="110" r="3"/><circle cx="316" cy="108" r="3"/><circle cx="362" cy="105" r="3"/><circle cx="408" cy="102" r="3"/><circle cx="454" cy="99" r="3"/><circle cx="500" cy="96" r="3"/><circle cx="546" cy="93" r="3"/><circle cx="592" cy="90" r="3"/>
+          </g>
+          <!-- x labels -->
+          <g font-size="10" fill="#788fa6" text-anchor="middle">
+            <text x="40" y="235">Jun</text><text x="86" y="235">Jul</text><text x="132" y="235">Aug</text><text x="178" y="235">Sep</text>
+            <text x="224" y="235">Oct</text><text x="270" y="235">Nov</text><text x="316" y="235">Dec</text><text x="362" y="235">Jan</text>
+            <text x="408" y="235">Feb</text><text x="454" y="235">Mar</text><text x="500" y="235">Apr</text><text x="546" y="235">May</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:#0070f2"></span>OIFOT</span>
+        <span><span class="sw" style="background:#7858ff"></span>DIFOT</span>
+        <span><span class="sw" style="background:#c35500"></span>Target</span>
+      </div>
+    </div>
+
+  </div><!-- /row-2-funnel -->
+
+  <!-- Row 3: Aging + Map -->
+  <div class="row row-2-eq">
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Receivables Aging</h3>
+          <div class="sub">As of 28 May 2026 · click bucket to drill</div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn">✨</button>
+          <button class="icon-btn">⋯</button>
+        </div>
+      </div>
+      <div class="aging">
+        <div class="aging-row" onclick="goto('p5')">
+          <span class="nm">Current</span>
+          <div class="bar"><span class="fill" style="width:62%;background:linear-gradient(90deg,#5fc15f,#188918)"></span></div>
+          <span class="vl">€11.4M</span>
+        </div>
+        <div class="aging-row" onclick="goto('p5')">
+          <span class="nm">1–30 d</span>
+          <div class="bar"><span class="fill" style="width:38%;background:linear-gradient(90deg,#cae8ff,#0070f2)"></span></div>
+          <span class="vl">€4.0M</span>
+        </div>
+        <div class="aging-row" onclick="goto('p5')">
+          <span class="nm">31–60 d</span>
+          <div class="bar"><span class="fill" style="width:18%;background:linear-gradient(90deg,#ffe2b3,#e9b300)"></span></div>
+          <span class="vl">€1.7M</span>
+        </div>
+        <div class="aging-row" onclick="goto('p5')">
+          <span class="nm">61–90 d</span>
+          <div class="bar"><span class="fill" style="width:9%;background:linear-gradient(90deg,#ffc093,#c35500)"></span></div>
+          <span class="vl">€0.7M</span>
+        </div>
+        <div class="aging-row" onclick="goto('p5')">
+          <span class="nm">90+ d</span>
+          <div class="bar"><span class="fill" style="width:6%;background:linear-gradient(90deg,#ff7a6e,#aa0808)"></span></div>
+          <span class="vl">€0.6M</span>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:11px;color:var(--sap-muted)">
+        <span>Total open: <b style="color:var(--sap-ink);font-size:13px">€18.4M</b></span>
+        <span>Past due: <b style="color:var(--sap-red);font-size:13px">€3.0M</b> · 16.3%</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Sales by Country</h3>
+          <div class="sub">Net value, last 12M · click country to filter</div>
+        </div>
+        <div class="actions">
+          <div class="seg" style="border-radius:14px">
+            <button class="active">Value</button><button>OIFOT</button>
+          </div>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet">
+          <!-- abstract continents (simplified) -->
+          <!-- North America -->
+          <path class="country" data-c="United States" data-v="$24.8M" fill="#0040b0"
+            d="M50,90 L130,80 L180,95 L210,120 L195,160 L150,180 L100,170 L60,140 Z"/>
+          <text x="125" y="135" font-size="10" fill="#fff" font-weight="600" text-anchor="middle">US</text>
+          <!-- Europe DE -->
+          <path class="country" data-c="Germany" data-v="€21.2M" fill="#0058c5"
+            d="M295,95 L325,90 L335,110 L320,128 L300,125 L290,110 Z"/>
+          <text x="313" y="113" font-size="9" fill="#fff" font-weight="600" text-anchor="middle">DE</text>
+          <!-- France -->
+          <path class="country" data-c="France" data-v="€14.6M" fill="#3a8aff"
+            d="M270,110 L295,108 L300,125 L290,145 L268,140 L260,125 Z"/>
+          <text x="282" y="128" font-size="9" fill="#fff" font-weight="600" text-anchor="middle">FR</text>
+          <!-- Switzerland -->
+          <path class="country" data-c="Switzerland" data-v="€7.3M" fill="#7eaaff"
+            d="M298,128 L315,128 L318,140 L300,142 Z"/>
+          <text x="308" y="138" font-size="8" fill="#fff" font-weight="600" text-anchor="middle">CH</text>
+          <!-- Italy -->
+          <path class="country" data-c="Italy" data-v="€5.1M" fill="#a3c4ff"
+            d="M310,142 L325,140 L335,165 L325,185 L315,180 L308,160 Z"/>
+          <text x="320" y="165" font-size="9" fill="#fff" font-weight="600" text-anchor="middle">IT</text>
+          <!-- UK -->
+          <path class="country" data-c="United Kingdom" data-v="€4.8M" fill="#a3c4ff"
+            d="M250,80 L268,82 L270,105 L255,110 L246,98 Z"/>
+          <text x="258" y="98" font-size="9" fill="#fff" font-weight="600" text-anchor="middle">UK</text>
+          <!-- Japan -->
+          <path class="country" data-c="Japan" data-v="€8.9M" fill="#5b9bff"
+            d="M510,135 L530,130 L540,150 L530,170 L515,165 L505,150 Z"/>
+          <text x="522" y="153" font-size="9" fill="#fff" font-weight="600" text-anchor="middle">JP</text>
+          <!-- China (lighter) -->
+          <path class="country" data-c="China" data-v="€2.4M" fill="#cae0ff"
+            d="M430,120 L500,115 L510,150 L490,175 L450,170 L425,150 Z"/>
+          <text x="465" y="148" font-size="10" fill="#1d2d3e" font-weight="600" text-anchor="middle">CN</text>
+          <!-- South America stub -->
+          <path class="country" data-c="Brazil" data-v="€1.6M" fill="#e1ecff"
+            d="M180,210 L220,205 L230,250 L210,285 L185,280 L170,245 Z"/>
+          <text x="200" y="248" font-size="10" fill="#1d2d3e" font-weight="600" text-anchor="middle">BR</text>
+          <!-- Australia -->
+          <path class="country" data-c="Australia" data-v="€1.1M" fill="#e1ecff"
+            d="M480,250 L530,245 L545,275 L520,290 L485,285 L470,265 Z"/>
+          <text x="505" y="272" font-size="10" fill="#1d2d3e" font-weight="600" text-anchor="middle">AU</text>
+        </svg>
+        <div class="map-tooltip" id="mapTip"></div>
+      </div>
+      <div class="legend" style="justify-content:flex-end">
+        <span style="font-size:11px;color:var(--sap-muted);margin-right:8px">Net value:</span>
+        <span><span class="sw" style="background:#e1ecff"></span>&lt;€2M</span>
+        <span><span class="sw" style="background:#a3c4ff"></span>€2–8M</span>
+        <span><span class="sw" style="background:#3a8aff"></span>€8–15M</span>
+        <span><span class="sw" style="background:#0040b0"></span>&gt;€15M</span>
+      </div>
+    </div>
+
+  </div><!-- /row-2-eq -->
+
+  <!-- Row 4: Top customers + alerts -->
+  <div class="row row-3">
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Top 10 Customers — MTD</h3>
+          <div class="sub">click row for header drill · "Open full" for line items</div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn">⤓</button>
+          <button class="icon-btn">⋯</button>
+        </div>
+      </div>
+      <div style="overflow:auto;max-height:380px">
+        <table class="sac">
+          <thead><tr>
+            <th>Customer</th><th>Country</th><th class="num">Orders</th><th class="num">Net Value</th><th class="num">OIFOT</th><th class="num">Open AR</th><th>Risk</th>
+          </tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Genentech Labs'})"><td><b>Genentech Labs</b></td><td>🇺🇸 US</td><td class="num">142</td><td class="num">$1.84M</td><td class="num">96.1%</td><td class="num">$2.10M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Bayer Pharma DE'})"><td><b>Bayer Pharma DE</b></td><td>🇩🇪 DE</td><td class="num">128</td><td class="num">€1.62M</td><td class="num">94.2%</td><td class="num">€1.78M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Sanofi FR'})"><td><b>Sanofi FR</b></td><td>🇫🇷 FR</td><td class="num">119</td><td class="num">€1.45M</td><td class="num">92.0%</td><td class="num">€1.55M</td><td><span class="chip warn">Med</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Roche CH'})"><td><b>Roche CH</b></td><td>🇨🇭 CH</td><td class="num">98</td><td class="num">€1.21M</td><td class="num">95.7%</td><td class="num">€0.92M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Takeda JP'})"><td><b>Takeda JP</b></td><td>🇯🇵 JP</td><td class="num">86</td><td class="num">€1.05M</td><td class="num">90.4%</td><td class="num">€1.28M</td><td><span class="chip bad">High</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Novartis CH'})"><td><b>Novartis CH</b></td><td>🇨🇭 CH</td><td class="num">82</td><td class="num">€0.98M</td><td class="num">94.8%</td><td class="num">€0.74M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'AstraZeneca UK'})"><td><b>AstraZeneca UK</b></td><td>🇬🇧 UK</td><td class="num">74</td><td class="num">€0.86M</td><td class="num">93.2%</td><td class="num">€0.62M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Merck US'})"><td><b>Merck US</b></td><td>🇺🇸 US</td><td class="num">68</td><td class="num">$0.92M</td><td class="num">95.4%</td><td class="num">$0.81M</td><td><span class="chip ok">Low</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'GSK UK'})"><td><b>GSK UK</b></td><td>🇬🇧 UK</td><td class="num">61</td><td class="num">€0.74M</td><td class="num">91.8%</td><td class="num">€0.58M</td><td><span class="chip warn">Med</span></td></tr>
+            <tr class="clickable" onclick="openSide({type:'cust',title:'Pfizer US'})"><td><b>Pfizer US</b></td><td>🇺🇸 US</td><td class="num">59</td><td class="num">$0.72M</td><td class="num">96.7%</td><td class="num">$0.44M</td><td><span class="chip ok">Low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Exception Alerts</h3>
+          <div class="sub">7 active · click to investigate</div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn">⋯</button>
+        </div>
+      </div>
+      <div class="alerts">
+        <div class="alert bad" onclick="goto('p2')">
+          <div class="ic">!</div>
+          <div>
+            <div class="ttl">Credit block — Sanofi FR</div>
+            <div class="meta">€420K, 3 orders held · SO 0045123, 0045126, 0045140</div>
+          </div>
+          <div class="age">2d</div>
+        </div>
+        <div class="alert warn" onclick="goto('p3')">
+          <div class="ic">⚠</div>
+          <div>
+            <div class="ttl">Late delivery risk</div>
+            <div class="meta">14 orders past confirmed ship · Plant DE01 · DHL delays</div>
+          </div>
+          <div class="age">today</div>
+        </div>
+        <div class="alert warn" onclick="goto('p2')">
+          <div class="ic">⚠</div>
+          <div>
+            <div class="ttl">Backorder — BIO-204</div>
+            <div class="meta">8 sales orders affected · €88K · ETA Jun 03</div>
+          </div>
+          <div class="age">1d</div>
+        </div>
+        <div class="alert info" onclick="goto('p4')">
+          <div class="ic">i</div>
+          <div>
+            <div class="ttl">Billing block released</div>
+            <div class="meta">6 invoices ready to post · approver K. Müller</div>
+          </div>
+          <div class="age">3h</div>
+        </div>
+        <div class="alert bad" onclick="goto('p5')">
+          <div class="ic">!</div>
+          <div>
+            <div class="ttl">Past-due 90+ — Takeda JP</div>
+            <div class="meta">€310K · dunning Lvl 3 · escalate to controller</div>
+          </div>
+          <div class="age">4d</div>
+        </div>
+        <div class="alert warn" onclick="goto('p4')">
+          <div class="ic">⚠</div>
+          <div>
+            <div class="ttl">Price discrepancy</div>
+            <div class="meta">5 invoices flagged · €92K · pricing master to review</div>
+          </div>
+          <div class="age">today</div>
+        </div>
+        <div class="alert info" onclick="goto('p3')">
+          <div class="ic">i</div>
+          <div>
+            <div class="ttl">Carrier change recommended</div>
+            <div class="meta">K+N OTIF 92% on JP lane · suggest DHL switch</div>
+          </div>
+          <div class="age">5h</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row-3 -->
+
+</section>
+
+<!-- =================================================================== -->
+<!-- PAGE 2 — SALES ORDERS                                                -->
+<!-- =================================================================== -->
+<section class="page" id="p2">
+
+  <div class="crumb-bar">
+    <a onclick="goto('p1')">Overview</a><span class="sep">›</span><b style="color:var(--sap-ink)">Sales Orders</b>
+  </div>
+
+  <!-- area summary KPIs -->
+  <div class="summary-strip">
+    <div class="tile sm"><div class="nm">Open Orders</div><div class="vl">1,284</div><div class="meta"><span class="delta flat">€12.4M value</span></div></div>
+    <div class="tile sm"><div class="nm">OIFOT</div><div class="vl">93.4<span class="u">%</span></div><div class="meta"><span class="delta down">▼ 1.6 vs target</span></div></div>
+    <div class="tile sm"><div class="nm">Avg Cycle Time</div><div class="vl">4.2<span class="u">d</span></div><div class="meta"><span class="delta flat">order → ship</span></div></div>
+    <div class="tile sm"><div class="nm">Held / Blocked</div><div class="vl">86</div><div class="meta"><span class="delta down">+12 WoW</span></div></div>
+  </div>
+
+  <div class="row row-2-eq">
+    <div class="card">
+      <div class="card-head"><h3>Orders by Status</h3><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <div class="aging">
+        <div class="aging-row"><span class="nm">Open</span><div class="bar"><span class="fill" style="width:62%;background:#0070f2"></span></div><span class="vl">798</span></div>
+        <div class="aging-row"><span class="nm">Partly delivered</span><div class="bar"><span class="fill" style="width:24%;background:#5b9bff"></span></div><span class="vl">312</span></div>
+        <div class="aging-row"><span class="nm">Held — credit</span><div class="bar"><span class="fill" style="width:8%;background:#aa0808"></span></div><span class="vl">42</span></div>
+        <div class="aging-row"><span class="nm">Held — delivery</span><div class="bar"><span class="fill" style="width:6%;background:#c35500"></span></div><span class="vl">28</span></div>
+        <div class="aging-row"><span class="nm">Held — billing</span><div class="bar"><span class="fill" style="width:4%;background:#e9b300"></span></div><span class="vl">16</span></div>
+        <div class="aging-row"><span class="nm">Returns (RE)</span><div class="bar"><span class="fill" style="width:7%;background:#7858ff"></span></div><span class="vl">88</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Order Value — 12M Trend</h3><div class="actions"><button class="icon-btn">✨</button><button class="icon-btn">⋯</button></div></div>
+      <div class="chart-area">
+        <svg viewBox="0 0 600 240" preserveAspectRatio="none">
+          <line class="grid-line" x1="40" y1="40" x2="595" y2="40"/>
+          <line class="grid-line" x1="40" y1="100" x2="595" y2="100"/>
+          <line class="grid-line" x1="40" y1="160" x2="595" y2="160"/>
+          <line class="grid-line" x1="40" y1="220" x2="595" y2="220"/>
+          <text class="axis-label" x="6" y="44">€10M</text><text class="axis-label" x="6" y="104">€7.5M</text>
+          <text class="axis-label" x="6" y="164">€5M</text><text class="axis-label" x="6" y="224">€2.5M</text>
+          <!-- bars -->
+          <g fill="#0070f2">
+            <rect x="55" y="160" width="28" height="60"/>
+            <rect x="100" y="148" width="28" height="72"/>
+            <rect x="145" y="135" width="28" height="85"/>
+            <rect x="190" y="142" width="28" height="78"/>
+            <rect x="235" y="125" width="28" height="95"/>
+            <rect x="280" y="118" width="28" height="102"/>
+            <rect x="325" y="110" width="28" height="110"/>
+            <rect x="370" y="115" width="28" height="105"/>
+            <rect x="415" y="98" width="28" height="122"/>
+            <rect x="460" y="90" width="28" height="130"/>
+            <rect x="505" y="85" width="28" height="135"/>
+            <rect x="550" y="78" width="28" height="142"/>
+          </g>
+          <!-- plan line -->
+          <polyline fill="none" stroke="#c35500" stroke-width="2" stroke-dasharray="5 3" points="69,150 114,142 159,135 204,128 249,120 294,112 339,108 384,104 429,98 474,94 519,90 564,84"/>
+          <g font-size="10" fill="#788fa6" text-anchor="middle">
+            <text x="69" y="235">Jun</text><text x="114" y="235">Jul</text><text x="159" y="235">Aug</text><text x="204" y="235">Sep</text>
+            <text x="249" y="235">Oct</text><text x="294" y="235">Nov</text><text x="339" y="235">Dec</text><text x="384" y="235">Jan</text>
+            <text x="429" y="235">Feb</text><text x="474" y="235">Mar</text><text x="519" y="235">Apr</text><text x="564" y="235">May</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:#0070f2"></span>Order value</span>
+        <span><span class="sw" style="background:#c35500"></span>Plan</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h3>Sales Orders</h3>
+        <div class="sub">1,284 rows · click row for header drill</div>
+      </div>
+      <div class="actions">
+        <div class="inner-tabs" style="border:none;padding:0">
+          <button class="inner-tab active">Headers</button>
+          <button class="inner-tab">By Reason</button>
+          <button class="inner-tab">By Sales Org</button>
+          <button class="inner-tab">Aging</button>
+        </div>
+        <button class="icon-btn">⤓</button>
+      </div>
+    </div>
+    <div style="overflow:auto;max-height:480px">
+      <table class="sac">
+        <thead><tr>
+          <th>SO #</th><th>Customer</th><th>Sales Org</th><th>Type</th><th>Created</th><th>Req. Ship</th><th class="num">Items</th><th class="num">Net Value</th><th>Status</th><th>Block</th>
+        </tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045123'})"><td><b>0045123</b></td><td>Sanofi FR</td><td>1010</td><td>OR</td><td>22 May</td><td>30 May</td><td class="num">8</td><td class="num">€142,300</td><td><span class="chip warn">Held</span></td><td><span class="chip bad">Credit</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045126'})"><td><b>0045126</b></td><td>Sanofi FR</td><td>1010</td><td>OR</td><td>22 May</td><td>31 May</td><td class="num">5</td><td class="num">€88,940</td><td><span class="chip warn">Held</span></td><td><span class="chip bad">Credit</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045140'})"><td><b>0045140</b></td><td>Bayer Pharma DE</td><td>1000</td><td>OR</td><td>23 May</td><td>02 Jun</td><td class="num">12</td><td class="num">€211,560</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045158'})"><td><b>0045158</b></td><td>Genentech Labs</td><td>2000</td><td>OR</td><td>24 May</td><td>03 Jun</td><td class="num">4</td><td class="num">$96,200</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045162'})"><td><b>0045162</b></td><td>Roche CH</td><td>1010</td><td>OR</td><td>24 May</td><td>04 Jun</td><td class="num">9</td><td class="num">€176,800</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045171'})"><td><b>0045171</b></td><td>Takeda JP</td><td>3000</td><td>OR</td><td>25 May</td><td>10 Jun</td><td class="num">6</td><td class="num">¥14.2M</td><td><span class="chip warn">Held</span></td><td><span class="chip warn">Delivery</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045183'})"><td><b>0045183</b></td><td>Bayer Pharma DE</td><td>1000</td><td>RE</td><td>26 May</td><td>—</td><td class="num">2</td><td class="num">−€18,200</td><td><span class="chip">Return</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045195'})"><td><b>0045195</b></td><td>Novartis CH</td><td>1010</td><td>OR</td><td>26 May</td><td>05 Jun</td><td class="num">7</td><td class="num">€134,820</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045208'})"><td><b>0045208</b></td><td>AstraZeneca UK</td><td>1010</td><td>OR</td><td>27 May</td><td>06 Jun</td><td class="num">11</td><td class="num">€198,400</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045221'})"><td><b>0045221</b></td><td>Merck US</td><td>2000</td><td>OR</td><td>27 May</td><td>07 Jun</td><td class="num">5</td><td class="num">$112,800</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045232'})"><td><b>0045232</b></td><td>GSK UK</td><td>1010</td><td>OR</td><td>27 May</td><td>08 Jun</td><td class="num">3</td><td class="num">€68,940</td><td><span class="chip warn">Held</span></td><td><span class="chip warn">Billing</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'so',title:'Sales Order 0045244'})"><td><b>0045244</b></td><td>Pfizer US</td><td>2000</td><td>OR</td><td>28 May</td><td>09 Jun</td><td class="num">8</td><td class="num">$148,200</td><td><span class="chip ok">Open</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- PAGE 3 — DELIVERIES                                                  -->
+<!-- =================================================================== -->
+<section class="page" id="p3">
+
+  <div class="crumb-bar">
+    <a onclick="goto('p1')">Overview</a><span class="sep">›</span><b style="color:var(--sap-ink)">Deliveries</b>
+  </div>
+
+  <div class="summary-strip">
+    <div class="tile sm"><div class="nm">DIFOT</div><div class="vl">95.1<span class="u">%</span></div><div class="meta"><span class="delta down">▼ 1.9 vs target</span></div></div>
+    <div class="tile sm"><div class="nm">In Transit</div><div class="vl">412</div><div class="meta"><span class="delta flat">€6.2M value</span></div></div>
+    <div class="tile sm"><div class="nm">Late Today</div><div class="vl">29</div><div class="meta"><span class="delta down">▲ 8 vs yest.</span></div></div>
+    <div class="tile sm"><div class="nm">Avg Lead Time</div><div class="vl">3.1<span class="u">d</span></div><div class="meta"><span class="delta flat">PGI → POD</span></div></div>
+  </div>
+
+  <div class="row row-2-eq">
+    <div class="card">
+      <div class="card-head"><h3>OTIF Miss — Reason Codes</h3><div class="sub" style="margin-left:6px">last 30 days</div><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <div class="aging">
+        <div class="aging-row"><span class="nm">Stock-out</span><div class="bar"><span class="fill" style="width:48%;background:#aa0808"></span></div><span class="vl">48%</span></div>
+        <div class="aging-row"><span class="nm">Carrier delay</span><div class="bar"><span class="fill" style="width:24%;background:#c35500"></span></div><span class="vl">24%</span></div>
+        <div class="aging-row"><span class="nm">QA hold</span><div class="bar"><span class="fill" style="width:12%;background:#e9b300"></span></div><span class="vl">12%</span></div>
+        <div class="aging-row"><span class="nm">Customer reject</span><div class="bar"><span class="fill" style="width:9%;background:#7858ff"></span></div><span class="vl">9%</span></div>
+        <div class="aging-row"><span class="nm">Doc / customs</span><div class="bar"><span class="fill" style="width:7%;background:#0070f2"></span></div><span class="vl">7%</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Carrier Performance</h3><div class="sub" style="margin-left:6px">DIFOT, lead time, late count</div><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <table class="sac" style="margin-top:6px">
+        <thead><tr><th>Carrier</th><th class="num">Shipments</th><th class="num">DIFOT</th><th class="num">Avg Days</th><th class="num">Late</th></tr></thead>
+        <tbody>
+          <tr><td><b>DHL</b></td><td class="num">4,210</td><td class="num"><span class="chip ok">96.4%</span></td><td class="num">2.8</td><td class="num">152</td></tr>
+          <tr><td><b>UPS</b></td><td class="num">2,180</td><td class="num"><span class="chip ok">94.2%</span></td><td class="num">3.2</td><td class="num">126</td></tr>
+          <tr><td><b>FedEx</b></td><td class="num">1,540</td><td class="num"><span class="chip warn">93.1%</span></td><td class="num">3.6</td><td class="num">106</td></tr>
+          <tr><td><b>Kuehne+Nagel</b></td><td class="num">980</td><td class="num"><span class="chip warn">92.0%</span></td><td class="num">4.1</td><td class="num">78</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div><h3>Outbound Deliveries</h3><div class="sub">412 in transit · click row to drill</div></div>
+      <div class="actions"><button class="icon-btn">⤓</button><button class="icon-btn">⋯</button></div>
+    </div>
+    <div style="overflow:auto;max-height:440px">
+      <table class="sac">
+        <thead><tr>
+          <th>Delivery #</th><th>SO #</th><th>Plant</th><th>Ship-to</th><th>Carrier</th><th>PGI Date</th><th>ETA</th><th class="num">Items</th><th>Status</th><th>OTIF</th>
+        </tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021045'})"><td><b>80021045</b></td><td>0045140</td><td>DE01</td><td>Bayer DE — Berlin</td><td>DHL</td><td>26 May</td><td>29 May</td><td class="num">12</td><td><span class="chip info">In transit</span></td><td><span class="chip ok">On track</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021048'})"><td><b>80021048</b></td><td>0045158</td><td>US01</td><td>Genentech — SF</td><td>UPS</td><td>27 May</td><td>30 May</td><td class="num">4</td><td><span class="chip info">In transit</span></td><td><span class="chip warn">At risk</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021051'})"><td><b>80021051</b></td><td>0045162</td><td>DE01</td><td>Roche CH — Basel</td><td>DHL</td><td>27 May</td><td>30 May</td><td class="num">9</td><td><span class="chip info">In transit</span></td><td><span class="chip ok">On track</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021060'})"><td><b>80021060</b></td><td>0045171</td><td>DE01</td><td>Takeda JP — Osaka</td><td>K+N</td><td>—</td><td>—</td><td class="num">6</td><td><span class="chip warn">Held</span></td><td><span class="chip bad">Miss</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021068'})"><td><b>80021068</b></td><td>0045195</td><td>DE01</td><td>Novartis CH — Basel</td><td>DHL</td><td>27 May</td><td>30 May</td><td class="num">7</td><td><span class="chip info">In transit</span></td><td><span class="chip ok">On track</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021075'})"><td><b>80021075</b></td><td>0045208</td><td>DE01</td><td>AstraZeneca — Cambridge</td><td>DHL</td><td>28 May</td><td>31 May</td><td class="num">11</td><td><span class="chip ok">PGI'd</span></td><td><span class="chip ok">On track</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021082'})"><td><b>80021082</b></td><td>0045221</td><td>US01</td><td>Merck — Rahway NJ</td><td>FedEx</td><td>28 May</td><td>30 May</td><td class="num">5</td><td><span class="chip ok">PGI'd</span></td><td><span class="chip ok">On track</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'del',title:'Delivery 80021091'})"><td><b>80021091</b></td><td>0045244</td><td>US01</td><td>Pfizer — Groton CT</td><td>UPS</td><td>—</td><td>—</td><td class="num">8</td><td><span class="chip">Picking</span></td><td><span class="chip ok">On plan</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- PAGE 4 — INVOICES                                                    -->
+<!-- =================================================================== -->
+<section class="page" id="p4">
+
+  <div class="crumb-bar">
+    <a onclick="goto('p1')">Overview</a><span class="sep">›</span><b style="color:var(--sap-ink)">Invoices</b>
+  </div>
+
+  <div class="summary-strip">
+    <div class="tile sm"><div class="nm">Invoiced MTD</div><div class="vl">€6.8<span class="u">M</span></div><div class="meta"><span class="delta up">▲ 4.1%</span></div></div>
+    <div class="tile sm"><div class="nm">Billing Block</div><div class="vl">42</div><div class="meta"><span class="delta down">€820K</span></div></div>
+    <div class="tile sm"><div class="nm">Invoice Accuracy</div><div class="vl">98.2<span class="u">%</span></div><div class="meta"><span class="delta flat">target 99%</span></div></div>
+    <div class="tile sm"><div class="nm">Credit Memos</div><div class="vl">31</div><div class="meta"><span class="delta flat">€146K</span></div></div>
+  </div>
+
+  <div class="row row-2-eq">
+    <div class="card">
+      <div class="card-head"><h3>Billing Block — Reasons</h3><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <div class="aging">
+        <div class="aging-row"><span class="nm">Price</span><div class="bar"><span class="fill" style="width:42%;background:#aa0808"></span></div><span class="vl">42%</span></div>
+        <div class="aging-row"><span class="nm">Awaiting POD</span><div class="bar"><span class="fill" style="width:26%;background:#c35500"></span></div><span class="vl">26%</span></div>
+        <div class="aging-row"><span class="nm">Credit hold</span><div class="bar"><span class="fill" style="width:18%;background:#e9b300"></span></div><span class="vl">18%</span></div>
+        <div class="aging-row"><span class="nm">Tax / VAT</span><div class="bar"><span class="fill" style="width:9%;background:#7858ff"></span></div><span class="vl">9%</span></div>
+        <div class="aging-row"><span class="nm">Other</span><div class="bar"><span class="fill" style="width:5%;background:#0070f2"></span></div><span class="vl">5%</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Invoice Volume — 12M</h3><div class="actions"><button class="icon-btn">✨</button><button class="icon-btn">⋯</button></div></div>
+      <div class="chart-area">
+        <svg viewBox="0 0 600 240" preserveAspectRatio="none">
+          <line class="grid-line" x1="40" y1="40" x2="595" y2="40"/>
+          <line class="grid-line" x1="40" y1="100" x2="595" y2="100"/>
+          <line class="grid-line" x1="40" y1="160" x2="595" y2="160"/>
+          <line class="grid-line" x1="40" y1="220" x2="595" y2="220"/>
+          <text class="axis-label" x="6" y="44">€8M</text><text class="axis-label" x="6" y="104">€6M</text>
+          <text class="axis-label" x="6" y="164">€4M</text><text class="axis-label" x="6" y="224">€2M</text>
+          <defs>
+            <linearGradient id="invArea" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#0070f2" stop-opacity=".3"/><stop offset="100%" stop-color="#0070f2" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M40,160 L86,150 L132,140 L178,130 L224,135 L270,118 L316,112 L362,108 L408,98 L454,92 L500,88 L546,80 L592,72 L592,220 L40,220 Z" fill="url(#invArea)"/>
+          <polyline fill="none" stroke="#0070f2" stroke-width="2" points="40,160 86,150 132,140 178,130 224,135 270,118 316,112 362,108 408,98 454,92 500,88 546,80 592,72"/>
+          <polyline fill="none" stroke="#aa0808" stroke-width="2" stroke-dasharray="5 3" points="40,210 86,208 132,206 178,205 224,205 270,204 316,203 362,206 408,205 454,204 500,203 546,202 592,201"/>
+          <g font-size="10" fill="#788fa6" text-anchor="middle">
+            <text x="40" y="235">Jun</text><text x="86" y="235">Jul</text><text x="132" y="235">Aug</text><text x="178" y="235">Sep</text>
+            <text x="224" y="235">Oct</text><text x="270" y="235">Nov</text><text x="316" y="235">Dec</text><text x="362" y="235">Jan</text>
+            <text x="408" y="235">Feb</text><text x="454" y="235">Mar</text><text x="500" y="235">Apr</text><text x="546" y="235">May</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:#0070f2"></span>Invoiced €</span>
+        <span><span class="sw" style="background:#aa0808"></span>Credit memos €</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><h3>Invoices</h3><div class="sub">Click row to drill</div></div><div class="actions"><button class="icon-btn">⤓</button><button class="icon-btn">⋯</button></div></div>
+    <div style="overflow:auto;max-height:440px">
+      <table class="sac">
+        <thead><tr>
+          <th>Invoice #</th><th>Customer</th><th>SO #</th><th>Type</th><th>Posting</th><th>Due</th><th class="num">Net</th><th class="num">Tax</th><th class="num">Gross</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034101'})"><td><b>90034101</b></td><td>Bayer Pharma DE</td><td>0045140</td><td>F2</td><td>26 May</td><td>25 Jun</td><td class="num">€211,560</td><td class="num">€40,196</td><td class="num">€251,756</td><td><span class="chip ok">Posted</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034102'})"><td><b>90034102</b></td><td>Genentech Labs</td><td>0045158</td><td>F2</td><td>27 May</td><td>26 Jun</td><td class="num">$96,200</td><td class="num">$0</td><td class="num">$96,200</td><td><span class="chip warn">Blocked</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034105'})"><td><b>90034105</b></td><td>Roche CH</td><td>0045162</td><td>F2</td><td>27 May</td><td>26 Jun</td><td class="num">€176,800</td><td class="num">€13,608</td><td class="num">€190,408</td><td><span class="chip ok">Posted</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Credit Memo 90034110'})"><td><b>90034110</b></td><td>Bayer Pharma DE</td><td>0045183</td><td>G2</td><td>27 May</td><td>—</td><td class="num">−€18,200</td><td class="num">−€3,458</td><td class="num">−€21,658</td><td><span class="chip">Credit memo</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034115'})"><td><b>90034115</b></td><td>Novartis CH</td><td>0045195</td><td>F2</td><td>28 May</td><td>27 Jun</td><td class="num">€134,820</td><td class="num">€10,381</td><td class="num">€145,201</td><td><span class="chip ok">Posted</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034118'})"><td><b>90034118</b></td><td>AstraZeneca UK</td><td>0045208</td><td>F2</td><td>28 May</td><td>27 Jun</td><td class="num">€198,400</td><td class="num">€39,680</td><td class="num">€238,080</td><td><span class="chip warn">Blocked</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'inv',title:'Invoice 90034122'})"><td><b>90034122</b></td><td>Merck US</td><td>0045221</td><td>F2</td><td>28 May</td><td>27 Jun</td><td class="num">$112,800</td><td class="num">$0</td><td class="num">$112,800</td><td><span class="chip ok">Posted</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- PAGE 5 — RECEIVABLES                                                 -->
+<!-- =================================================================== -->
+<section class="page" id="p5">
+
+  <div class="crumb-bar">
+    <a onclick="goto('p1')">Overview</a><span class="sep">›</span><b style="color:var(--sap-ink)">Receivables</b>
+  </div>
+
+  <div class="summary-strip">
+    <div class="tile sm"><div class="nm">Open AR</div><div class="vl">€18.4<span class="u">M</span></div><div class="meta"><span class="delta down">▲ €0.9M</span></div></div>
+    <div class="tile sm"><div class="nm">DSO</div><div class="vl">47.2<span class="u">d</span></div><div class="meta"><span class="delta down">▲ 2.1d</span></div></div>
+    <div class="tile sm"><div class="nm">Past Due 60+</div><div class="vl">€1.3<span class="u">M</span></div><div class="meta"><span class="delta down">▲ €220K</span></div></div>
+    <div class="tile sm"><div class="nm">In Dispute</div><div class="vl">€0.6<span class="u">M</span></div><div class="meta"><span class="delta flat">14 cases</span></div></div>
+  </div>
+
+  <div class="row row-2-eq">
+    <div class="card">
+      <div class="card-head"><h3>Aging Buckets</h3><div class="sub" style="margin-left:6px">click to filter open items</div><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <div class="aging">
+        <div class="aging-row"><span class="nm">Current</span><div class="bar"><span class="fill" style="width:62%;background:linear-gradient(90deg,#5fc15f,#188918)"></span></div><span class="vl">€11.4M</span></div>
+        <div class="aging-row"><span class="nm">1–30 d</span><div class="bar"><span class="fill" style="width:38%;background:linear-gradient(90deg,#cae8ff,#0070f2)"></span></div><span class="vl">€4.0M</span></div>
+        <div class="aging-row"><span class="nm">31–60 d</span><div class="bar"><span class="fill" style="width:18%;background:linear-gradient(90deg,#ffe2b3,#e9b300)"></span></div><span class="vl">€1.7M</span></div>
+        <div class="aging-row"><span class="nm">61–90 d</span><div class="bar"><span class="fill" style="width:9%;background:linear-gradient(90deg,#ffc093,#c35500)"></span></div><span class="vl">€0.7M</span></div>
+        <div class="aging-row"><span class="nm">90+ d</span><div class="bar"><span class="fill" style="width:6%;background:linear-gradient(90deg,#ff7a6e,#aa0808)"></span></div><span class="vl">€0.6M</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Top Debtors — by Past Due</h3><div class="actions"><button class="icon-btn">⋯</button></div></div>
+      <table class="sac" style="margin-top:6px">
+        <thead><tr><th>Customer</th><th>Country</th><th class="num">Open AR</th><th class="num">Past Due</th><th>Dunning</th></tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'Takeda JP — AR'})"><td><b>Takeda JP</b></td><td>🇯🇵 JP</td><td class="num">€1.28M</td><td class="num">€310K</td><td><span class="chip bad">Lvl 3</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'Sanofi FR — AR'})"><td><b>Sanofi FR</b></td><td>🇫🇷 FR</td><td class="num">€1.55M</td><td class="num">€220K</td><td><span class="chip warn">Lvl 2</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'Genentech Labs — AR'})"><td><b>Genentech Labs</b></td><td>🇺🇸 US</td><td class="num">$2.10M</td><td class="num">$140K</td><td><span class="chip">Lvl 1</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'Bayer Pharma DE — AR'})"><td><b>Bayer Pharma DE</b></td><td>🇩🇪 DE</td><td class="num">€1.78M</td><td class="num">€90K</td><td><span class="chip">Lvl 1</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'GSK UK — AR'})"><td><b>GSK UK</b></td><td>🇬🇧 UK</td><td class="num">€0.58M</td><td class="num">€42K</td><td><span class="chip">Lvl 1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><h3>Open Items</h3><div class="sub">220 items · click row to drill</div></div><div class="actions"><button class="icon-btn">⤓</button><button class="icon-btn">⋯</button></div></div>
+    <div style="overflow:auto;max-height:440px">
+      <table class="sac">
+        <thead><tr>
+          <th>Doc #</th><th>Customer</th><th>Type</th><th>Posting</th><th>Due</th><th class="num">Days OD</th><th class="num">Amount</th><th>Dispute</th><th>Dunning</th>
+        </tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900221'})"><td><b>1900221</b></td><td>Takeda JP</td><td>Inv</td><td>02 Mar</td><td>01 Apr</td><td class="num">57</td><td class="num">€124,000</td><td>—</td><td><span class="chip bad">Lvl 3</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900244'})"><td><b>1900244</b></td><td>Takeda JP</td><td>Inv</td><td>14 Feb</td><td>16 Mar</td><td class="num">73</td><td class="num">€186,000</td><td><span class="chip warn">Open</span></td><td><span class="chip bad">Lvl 3</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900318'})"><td><b>1900318</b></td><td>Sanofi FR</td><td>Inv</td><td>10 Apr</td><td>10 May</td><td class="num">18</td><td class="num">€220,000</td><td>—</td><td><span class="chip warn">Lvl 2</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900402'})"><td><b>1900402</b></td><td>Genentech Labs</td><td>Inv</td><td>01 May</td><td>31 May</td><td class="num">−3</td><td class="num">$152,000</td><td>—</td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900418'})"><td><b>1900418</b></td><td>Bayer Pharma DE</td><td>Inv</td><td>03 May</td><td>02 Jun</td><td class="num">−5</td><td class="num">€88,400</td><td>—</td><td>—</td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900425'})"><td><b>1900425</b></td><td>GSK UK</td><td>Inv</td><td>15 Apr</td><td>15 May</td><td class="num">13</td><td class="num">€42,000</td><td>—</td><td><span class="chip">Lvl 1</span></td></tr>
+          <tr class="clickable" onclick="openSide({type:'ar',title:'AR Doc 1900441'})"><td><b>1900441</b></td><td>Roche CH</td><td>Inv</td><td>20 Apr</td><td>20 May</td><td class="num">8</td><td class="num">€68,200</td><td>—</td><td><span class="chip">Lvl 1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div><!-- /canvas -->
+
+
+<!-- ============== SIDE PANEL (header drill) ============== -->
+<div class="scrim" id="scrim" onclick="closeSide()"></div>
+<aside class="side" id="side">
+  <header>
+    <div>
+      <div class="small" id="side-kind">Header drill</div>
+      <div class="ttl" id="side-title">—</div>
+    </div>
+    <button class="close" onclick="closeSide()">✕</button>
+  </header>
+  <div class="body">
+    <div class="kv-grid">
+      <div><div class="k">Customer</div><div class="v" id="side-cust">Bayer Pharma DE</div></div>
+      <div><div class="k">Sales Org</div><div class="v">1000 — Nova DE</div></div>
+      <div><div class="k">Currency</div><div class="v">EUR</div></div>
+      <div><div class="k">Net Value</div><div class="v">€211,560</div></div>
+      <div><div class="k">Created</div><div class="v">23 May 2026</div></div>
+      <div><div class="k">Req. Ship</div><div class="v">02 Jun 2026</div></div>
+      <div><div class="k">Incoterms</div><div class="v">DAP — Berlin</div></div>
+      <div><div class="k">Payment</div><div class="v">Net 30</div></div>
+    </div>
+
+    <div>
+      <div class="k" style="font-size:11px;color:var(--sap-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Status timeline</div>
+      <div class="timeline">
+        <div class="step done"><div class="dot">✓</div><div class="label">Created</div><div class="line"></div></div>
+        <div class="step done"><div class="dot">✓</div><div class="label">Confirmed</div><div class="line"></div></div>
+        <div class="step current"><div class="dot">3</div><div class="label">Picking</div><div class="line"></div></div>
+        <div class="step pending"><div class="dot">4</div><div class="label">PGI</div><div class="line"></div></div>
+        <div class="step pending"><div class="dot">5</div><div class="label">Invoiced</div><div class="line"></div></div>
+        <div class="step pending"><div class="dot">6</div><div class="label">Paid</div></div>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="ai">✨</div>
+      <div><b>Insight:</b> 2 of 12 line items are at risk of stock-out (BIO-204, BIO-301). Recommend partial confirmation by 30 May to protect OIFOT for the remaining items.</div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;color:var(--sap-muted);text-transform:uppercase;letter-spacing:.4px;margin:0 0 6px 0">Top 5 line items (preview)</div>
+      <table class="sac">
+        <thead><tr><th>#</th><th>Material</th><th class="num">Qty</th><th class="num">Net</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>10</td><td>BIO-204</td><td class="num">120</td><td class="num">€18,400</td><td><span class="chip warn">Backorder</span></td></tr>
+          <tr><td>20</td><td>BIO-301</td><td class="num">40</td><td class="num">€12,200</td><td><span class="chip warn">Backorder</span></td></tr>
+          <tr><td>30</td><td>BIO-118</td><td class="num">200</td><td class="num">€26,800</td><td><span class="chip ok">Confirmed</span></td></tr>
+          <tr><td>40</td><td>BIO-440</td><td class="num">25</td><td class="num">€9,150</td><td><span class="chip ok">Confirmed</span></td></tr>
+          <tr><td>50</td><td>BIO-501</td><td class="num">60</td><td class="num">€14,300</td><td><span class="chip ok">Confirmed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="footer">
+    <button class="tb-btn">Open in Fiori</button>
+    <button class="tb-btn">Add to watchlist</button>
+    <button class="tb-btn primary">↗ Open full view</button>
+  </div>
+</aside>
+
+
+<script>
+  // page nav
+  function goto(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id===id));
+    document.querySelectorAll('.story-tab').forEach(b=>b.classList.toggle('active', b.dataset.page===id));
+    window.scrollTo({top:0,behavior:'smooth'});
+    closeSide();
+  }
+  document.querySelectorAll('.story-tab').forEach(b=>b.addEventListener('click', ()=>goto(b.dataset.page)));
+
+  // filter dropdown toggling
+  function toggleFilter(btn){
+    const flt = btn.parentElement;
+    const wasOpen = flt.classList.contains('open');
+    document.querySelectorAll('.flt.open').forEach(f=>f.classList.remove('open'));
+    if(!wasOpen) flt.classList.add('open');
+  }
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('.flt')) document.querySelectorAll('.flt.open').forEach(f=>f.classList.remove('open'));
+  });
+
+  // filter cascade simulation: country -> companycode counts
+  document.querySelectorAll('.flt-menu input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const flt = cb.closest('.flt');
+      const checked = flt.querySelectorAll('input[type=checkbox]:checked').length;
+      const btn = flt.querySelector('.flt-btn');
+      const count = btn.querySelector('.count');
+      const vl = btn.querySelector('.vl');
+      if(checked === 0){ vl.textContent = 'None'; if(count) count.remove(); btn.classList.remove('active'); }
+      else if(checked === flt.querySelectorAll('input[type=checkbox]').length){ vl.textContent = 'All'; if(count) count.remove(); btn.classList.remove('active'); }
+      else {
+        vl.textContent = checked + ' selected';
+        if(!count){
+          const c = document.createElement('span'); c.className='count'; c.textContent=checked;
+          btn.insertBefore(c, btn.querySelector('.caret'));
+        } else { count.textContent = checked; }
+        btn.classList.add('active');
+      }
+    });
+  });
+
+  // trend segmented control
+  document.querySelectorAll('#trendSeg button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#trendSeg button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+
+  function resetFilters(){
+    location.reload();
+  }
+
+  // side panel
+  const side = document.getElementById('side'), scrim = document.getElementById('scrim');
+  function openSide(opts){
+    document.getElementById('side-title').textContent = opts.title || 'Document';
+    const kindMap = {so:'Sales Order · Header drill',del:'Delivery · Header drill',inv:'Invoice · Header drill',ar:'AR Document · Drill',cust:'Customer · 360°'};
+    document.getElementById('side-kind').textContent = kindMap[opts.type] || 'Header drill';
+    side.classList.add('open'); scrim.classList.add('open');
+  }
+  function closeSide(){ side.classList.remove('open'); scrim.classList.remove('open'); }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSide(); });
+
+  // map tooltip
+  const mapTip = document.getElementById('mapTip');
+  document.querySelectorAll('.country').forEach(c=>{
+    c.addEventListener('mousemove', e=>{
+      mapTip.style.opacity = '1';
+      mapTip.textContent = c.dataset.c + ' · ' + c.dataset.v;
+      const wrap = c.closest('.map-wrap').getBoundingClientRect();
+      mapTip.style.left = (e.clientX - wrap.left + 10) + 'px';
+      mapTip.style.top = (e.clientY - wrap.top + 10) + 'px';
+    });
+    c.addEventListener('mouseleave', ()=>{ mapTip.style.opacity = '0'; });
+    c.addEventListener('click', ()=>{ /* could filter */ });
+  });
+</script>
+
+</body>
+</html>
